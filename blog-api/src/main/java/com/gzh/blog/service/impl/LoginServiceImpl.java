@@ -33,10 +33,10 @@ public class LoginServiceImpl implements LoginService {
     public Result login(LoginParams loginParams) {
         /**
          * 1. 检查参数是否合法
-         * 2. 根据用户名和密码去user表中查询 是否存在
-         * 3. 如果不存在 登录失败
-         * 4. 如果存在 ，使用jwt 生成token 返回给前端
-         * 5. token放入redis当中，redis  token：user信息 设置过期时间
+         * 2. 根据用户名和密码去user表中查询是否存在
+         * 3. 如果不存在则登录失败
+         * 4. 如果存在使用jwt生成token返回给前端
+         * 5. 将token-用户信息以键值对的形式放入redis当中，并设置过期时间
          *  (登录认证的时候 先认证token字符串是否合法，去redis认证是否存在)
          */
         String account = loginParams.getAccount();
@@ -56,6 +56,7 @@ public class LoginServiceImpl implements LoginService {
 
     @Override
     public SysUser checkToken(String token) {
+        // 非空判断其实永远执行不到，拦截器中已经做了非空判断了
         if (StringUtils.isBlank(token)) {
             return null;
         }
@@ -86,8 +87,8 @@ public class LoginServiceImpl implements LoginService {
          * 2. 判断账户是否存在，存在 返回账户已经被注册
          * 3. 不存在，注册用户
          * 4. 生成token
-         * 5. 存入redis 并返回
-         * 6. 注意 加上事务，一旦中间的任何过程出现问题，注册的用户 需要回滚
+         * 5. 存入redis并返回
+         * 6. 注意加上事务，一旦中间的任何过程出现问题，注册的用户需要回滚
          */
         String account = loginParams.getAccount();
         String password = loginParams.getPassword();
@@ -117,8 +118,8 @@ public class LoginServiceImpl implements LoginService {
         this.sysUserService.save(sysUser);
 
         String token = JWTUtils.createToken(sysUser.getId());
-
         redisTemplate.opsForValue().set("TOKEN_" + token, JSON.toJSONString(sysUser), 1, TimeUnit.DAYS);
+
         return Result.success(token);
     }
 

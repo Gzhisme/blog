@@ -29,7 +29,7 @@ public class ThreadPoolConfig {
         executor.setThreadNamePrefix("个人博客项目");
         // 等待所有任务结束后再关闭线程池
         executor.setWaitForTasksToCompleteOnShutdown(true);
-        //执行初始化
+        // 执行初始化
         executor.initialize();
         return executor;
     }

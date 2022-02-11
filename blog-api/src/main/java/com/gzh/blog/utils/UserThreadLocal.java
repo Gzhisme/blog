@@ -8,18 +8,19 @@ import com.gzh.blog.dao.pojo.SysUser;
 public class UserThreadLocal {
 
     private UserThreadLocal(){}
+
     // 作用：线程变量隔离
-    private static final ThreadLocal<SysUser> LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<SysUser> threadLocal = new ThreadLocal<>();
 
     public static void put(SysUser sysUser){
-        LOCAL.set(sysUser);
+        threadLocal.set(sysUser);
     }
 
     public static SysUser get(){
-        return LOCAL.get();
+        return threadLocal.get();
     }
 
     public static void remove(){
-        LOCAL.remove();
+        threadLocal.remove();
     }
 }
