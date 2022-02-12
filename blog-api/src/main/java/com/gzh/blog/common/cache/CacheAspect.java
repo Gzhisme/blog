@@ -38,11 +38,10 @@ public class CacheAspect {
     @Around("pt()")
     public Object around(ProceedingJoinPoint pjp) {
         try {
-            Signature signature = pjp.getSignature();
             // 类名
             String className = pjp.getTarget().getClass().getSimpleName();
             // 调用的方法名
-            String methodName = signature.getName();
+            String methodName = pjp.getSignature().getName();
 
             Class[] parameterTypes = new Class[pjp.getArgs().length];
             Object[] args = pjp.getArgs();
